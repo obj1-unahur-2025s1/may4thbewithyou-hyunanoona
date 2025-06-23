@@ -1,49 +1,28 @@
-import casas.*
+class PersonajeConArma{
+  var property armaActual 
 
-class Criatura{
-  var salud
-
-  method perderVida(unValor){salud = salud - unValor}
-
-  method recibirHechizo(unHechizo){salud = salud - unHechizo.daño()}
+  method potencia() = armaActual.energia()
 }
 
+class PersonajeCongelado inherits PersonajeConArma{ //han solo
+  var estaCongelado = true
 
-class Estudiante inherits Criatura{
-  var casa
-  const esPeligroso = salud >= 1 and casa.esPeligroso(self)
-  var property habilidad
-  var property esSangrePura
-  var hechizosAprendidos
-  var materia
+  override method potencia() = if(estaCongelado) 0 else super()*2
+}
 
-  method cambiarDeCasa(unaCasa){casa = unaCasa}
+object r2d2{
+  var bateria = 50
+  const valentia = 10
 
-  method anotarse(unaMateria){
-    unaMateria.agregarAlumno(self)
-    materia = unaMateria
-  }
+  method potencia() = bateria + valentia
 
-  method aprenderHechizo(){
-    hechizosAprendidos.add(materia.hechizoActual())
-    habilidad = habilidad + 1
-  }
+  method cargar() {bateria = 100}
 
-  method lanzarHechizo(unHechizo, unSerVivo){
-    if (self.estaEnCondicionesDeLanzar(unHechizo)){
-      unSerVivo.recibirHechizo(unHechizo)
-      unHechizo.aplicarConsecuencias(self)
-    }
-    else{
-      self.error("no estas en condiciones de lanzar el hechizo")
-    }
-  }
-
-  method estaEnCondicionesDeLanzar(unHechizo) = hechizosAprendidos.contains(unHechizo) and unHechizo.puedeRealizarsePor(self)
+  method descargar(unaCantidad) {bateria = bateria - unaCantidad}
 
   method initialize(){
-        if(not casas.validas().contains(casa)){
-            self.error(casa.toString() + "no es una casa valida")
-        }
+    if(bateria < 0){
+      self.error("es imposible que tenga" + bateria.toString() + "de bateria")
+    }
   }
 }
